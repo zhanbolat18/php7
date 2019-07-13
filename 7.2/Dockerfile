@@ -44,6 +44,16 @@ RUN if [ ${USER_ID:-0} -ne 0 ] && [ ${GROUP_ID:-0} -ne 0 ]; then \
 RUN  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
         && composer global require hirak/prestissimo
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libbz2-dev \
+        libfreetype6-dev \
+        libjpeg-dev \
+        libpng-dev \
+        libwebp-dev \
+        libxpm-dev \
+    && docker-php-ext-install gd
+
 USER www-data
 
 WORKDIR /var/www
