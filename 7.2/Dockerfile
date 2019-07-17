@@ -54,6 +54,8 @@ RUN apt-get update && \
         libxpm-dev \
     && docker-php-ext-install gd
 
+RUN apt-get update && docker-php-ext-install pcntl
+
 USER www-data
 
 WORKDIR /var/www
