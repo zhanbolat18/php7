@@ -26,9 +26,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils \
     && pecl install
 
 #USER_ID=$(id -u ${USER})
-ARG USER_ID
+ARG USER_ID=1000
 #GROUP_ID=$(id -g ${USER})
-ARG GROUP_ID
+ARG GROUP_ID=1000
 
 RUN if [ ${USER_ID:-0} -ne 0 ] && [ ${GROUP_ID:-0} -ne 0 ]; then \
     userdel -f www-data &&\
