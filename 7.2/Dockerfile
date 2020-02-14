@@ -1,13 +1,15 @@
 FROM php:7.2-fpm
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils \
+        libbz2-dev \
+        libjpeg-dev \
+		libjpeg62-turbo-dev \
         libmcrypt-dev \
         libxml++2.6-dev \
         libcurl3-dev \
         libpq-dev \
         libfreetype6-dev \
         libwebp-dev \
-		libjpeg62-turbo-dev \
         libpng-dev \
         libxpm-dev \
 		libmcrypt-dev \
@@ -17,13 +19,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils \
         zlib1g-dev \
         libzip-dev \
         zip unzip python git \
-	&& docker-php-ext-install curl mbstring xml zip \
-    && docker-php-ext-configure pgsql --with-pgsql=/usr/local/pgsql \
+	&& docker-php-ext-install curl mbstring xml zip gd \
     && docker-php-ext-configure zip --with-libzip \
-    && docker-php-ext-install intl pdo pgsql pdo_pgsql bcmath zip \
+    && docker-php-ext-install intl pdo mysqli pdo_mysql bcmath zip \
+    && docker-php-ext-install pcntl \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
     && rm -rf /tmp/* /var/cache/apk/* \
-    && rm -r /var/lib/apt/lists/* \
-    && pecl install
+    && rm -r /var/lib/apt/lists/*
 
 #USER_ID=$(id -u ${USER})
 ARG USER_ID=1000
@@ -41,22 +44,12 @@ RUN if [ ${USER_ID:-0} -ne 0 ] && [ ${GROUP_ID:-0} -ne 0 ]; then \
         /home/www-data \
 ;fi
 
-RUN  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-        && composer global require hirak/prestissimo
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        libbz2-dev \
-        libfreetype6-dev \
-        libjpeg-dev \
-        libpng-dev \
-        libwebp-dev \
-        libxpm-dev \
-    && docker-php-ext-install gd
-
-RUN apt-get update && docker-php-ext-install pcntl
+RUN  curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 USER www-data
 
-WORKDIR /var/www
+RUN composer global require hirak/prestissimo
 
+ENV PATH=${PATH}:/home/www-data/.composer/vendor/bin
+
+WORKDIR /var/www

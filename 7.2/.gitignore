@@ -1,0 +1,5 @@
+*
+!.gitignore
+!Dockerfile.dev
+!Dockerfile
+!Dockerfile.deploy
