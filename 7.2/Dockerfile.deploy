@@ -13,12 +13,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends apt-utils \
         libpng-dev \
         libxpm-dev \
 		libmcrypt-dev \
-		libpng-dev \
 		libmagickwand-dev \
         libmagickcore-dev \
         zlib1g-dev \
         libzip-dev \
         zip unzip python git \
+    && docker-php-ext-configure gd \
+         --with-gd \
+         --with-jpeg-dir \
+         --with-png-dir \
+         --with-zlib-dir \
 	&& docker-php-ext-install curl mbstring xml zip gd \
     && docker-php-ext-configure zip --with-libzip \
     && docker-php-ext-install intl pdo mysqli pdo_mysql bcmath zip \
